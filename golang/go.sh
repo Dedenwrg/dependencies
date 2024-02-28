@@ -21,8 +21,8 @@ sudo tar -C /usr/local -xzf "go$ver.linux-$arch_type.tar.gz" &&
 rm "go$ver.linux-$arch_type.tar.gz" &&
 
 # Add Go binary to PATH
-echo "export PATH=\$PATH:/usr/local/go/bin:\$HOME/go/bin" >> $HOME/.bashrc &&
-source $HOME/.bashrc &&
+echo "export PATH=\$PATH:/usr/local/go/bin:\$HOME/go/bin" >> $HOME/.bash_profile &&
+source $HOME/.bash_profile &&
 
 # Check Go version
 go version
