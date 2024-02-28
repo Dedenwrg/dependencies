@@ -2,9 +2,9 @@
 
 # Detect architecture
 architecture=$(uname -m)
-if [[ $architecture == "x86_64" ]]; then
+if [ "$architecture" = "x86_64" ]; then
     arch_type="amd64"
-elif [[ $architecture == "aarch64" ]]; then
+elif [ "$architecture" = "aarch64" ]; then
     arch_type="arm64"
 else
     echo "Unsupported architecture: $architecture"
@@ -21,8 +21,8 @@ sudo tar -C /usr/local -xzf "go$ver.linux-$arch_type.tar.gz" &&
 rm "go$ver.linux-$arch_type.tar.gz" &&
 
 # Add Go binary to PATH
-echo "export PATH=\$PATH:/usr/local/go/bin:\$HOME/go/bin" >> $HOME/.bash_profile &&
-source $HOME/.bash_profile &&
+echo "export PATH=\$PATH:/usr/local/go/bin:\$HOME/go/bin" >> $HOME/.bashrc &&
+source $HOME/.bashrc &&
 
 # Check Go version
 go version
