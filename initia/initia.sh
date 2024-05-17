@@ -28,12 +28,12 @@ initiad init $MONIKER --chain-id $INITIA_CHAIN_ID
 sed -i -e "s|^node *=.*|node = \"tcp://localhost:${INITIA_PORT}657\"|" $HOME/.initia/config/client.toml
 
 # Download genesis and addrbook files
-curl -Ls https://testnet-file.ruangnode.com/snap-testnet/initia-testnet/genesis.json > $HOME/.initia/config/genesis.json
-curl -Ls https://testnet-file.ruangnode.com/snap-testnet/initia-testnet/addrbook.json > $HOME/.initia/config/addrbook.json
+curl -Ls https://snapshot.adanothe.com/initia/genesis.json > $HOME/.initia/config/genesis.json
+curl -Ls https://snapshot.adanothe.com/initia/addrbook.json > $HOME/.initia/config/addrbook.json
 
 # Configure peers and seeds
-PEERS="e3ac92ce5b790c76ce07c5fa3b257d83a517f2f6@178.18.251.146:30656,2692225700832eb9b46c7b3fc6e4dea2ec044a78@34.126.156.141:26656,2a574706e4a1eba0e5e46733c232849778faf93b@84.247.137.184:53456,40d3f977d97d3c02bd5835070cc139f289e774da@168.119.10.134:26313,1f6633bc18eb06b6c0cab97d72c585a6d7a207bc@65.109.59.22:25756,4a988797d8d8473888640b76d7d238b86ce84a2c@23.158.24.168:26656,e3679e68616b2cd66908c460d0371ac3ed7795aa@176.34.17.102:26656,d2a8a00cd5c4431deb899bc39a057b8d8695be9e@138.201.37.195:53456,329227cf8632240914511faa9b43050a34aa863e@43.131.13.84:26656,517c8e70f2a20b8a3179a30fe6eb3ad80c407c07@37.60.231.212:26656,07632ab562028c3394ee8e78823069bfc8de7b4c@37.27.52.25:19656,028999a1696b45863ff84df12ebf2aebc5d40c2d@37.27.48.77:26656,3c44f7dbb473fee6d6e5471f22fa8d8095bd3969@185.219.142.137:53456,8db320e665dbe123af20c4a5c667a17dc146f4d0@51.75.144.149:26656,c424044f3249e73c050a7b45eb6561b52d0db456@158.220.124.183:53456,767fdcfdb0998209834b929c59a2b57d474cc496@207.148.114.112:26656,edcc2c7098c42ee348e50ac2242ff897f51405e9@65.109.34.205:36656,140c332230ac19f118e5882deaf00906a1dba467@185.219.142.119:53456,4eb031b59bd0210481390eefc656c916d47e7872@37.60.248.151:53456,ff9dbc6bb53227ef94dc75ab1ddcaeb2404e1b0b@178.170.47.171:26656,ffb9874da3e0ead65ad62ac2b569122f085c0774@149.28.134.228:26656"
-SEEDS="2eaa272622d1ba6796100ab39f58c75d458b9dbc@34.142.181.82:26656,c28827cb96c14c905b127b92065a3fb4cd77d7f6@testnet-seeds.whispernode.com:25756"
+PEERS="093e1b89a498b6a8760ad2188fbda30a05e4f300@35.240.207.217:26656"
+PEERS="dd94a609ed61354c123f1707cba6fe126f2a5bb6@95.217.152.243:15656,2b1915a1c08d711a0fa0d723bbbef1dc4692b709@149.102.140.81:1565,aee7083ab11910ba3f1b8126d1b3728f13f54943@65.108.193.254:11656,a670a0386383e56065e87b0e68e198f55aa8765c@89.117.57.28:46656,c9d57dbf7968e7f159613a0728ee6db29a8bb392@31.220.77.25:26656,8394f236b9c2150dab2d44649d16e6090379c4ef@34.125.186.80:53456,78c07f147ea3bef03b323930145238a16020f928@64.225.58.97:26656,d952f8524f597ec1bca7f8d634f4630ac985b87c@65.109.113.233:25756"
 
 sed -i \
     -e "s/^seeds *=.*/seeds = \"$SEEDS\"/" \
@@ -85,8 +85,12 @@ WantedBy=multi-user.target
 EOF
 
 # Download and extract snapshot
-curl -L https://testnet-file.ruangnode.com/snap-testnet/initia-testnet/snapshot_latest.tar.lz4 | tar -Ilz4 -xf - -C $HOME/.initia
-[[ -f $HOME/.initia/data/upgrade-info.json ]] && cp $HOME/.initia/data/upgrade-info.json $HOME/.initia/cosmovisor/genesis/upgrade-info.json
+initiad tendermint unsafe-reset-all --home $HOME/.initia
+if curl -s --head https://snapshot.adanothe.com/initia/initia-snapshot-20240517.tar.lz4 | head -n 1 | grep "200" > /dev/null; then
+curl https://snapshot.adanothe.com/initia/initia-snapshot-20240517.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.initia
+    else
+  echo no have snap
+fi
 
 # Enable and start Initia service
 sudo systemctl daemon-reload
