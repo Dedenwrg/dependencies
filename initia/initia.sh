@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# install dependencies
+sudo apt update && sudo apt upgrade -y
+sudo apt install curl git wget htop tmux build-essential jq make lz4 gcc unzip -y
+
+curl --proto '=https' --tlsv1.2 -sSfL https://raw.githubusercontent.com/Dedenwrg/dependencies/main/golang/go.sh | sudo bash
+
 # Prompt user for moniker
 read -p "Please enter your moniker: " MONIKER
 
@@ -86,8 +92,8 @@ EOF
 
 # Download and extract snapshot
 initiad tendermint unsafe-reset-all --home $HOME/.initia
-if curl -s --head https://snapshot.adanothe.com/initia/initia-snapshot-20240517.tar.lz4 | head -n 1 | grep "200" > /dev/null; then
-curl https://snapshot.adanothe.com/initia/initia-snapshot-20240517.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.initia
+if curl -s --head https://snapshot.adanothe.com/initia/initia-snapshot-latest.tar.lz4 | head -n 1 | grep "200" > /dev/null; then
+curl https://snapshot.adanothe.com/initia/initia-snapshot-latest.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.initia
     else
   echo no have snap
 fi
